@@ -18,6 +18,10 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 
+from core import settings
+
+from django.conf.urls.static import static
+
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -27,4 +31,7 @@ urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path('admin/', admin.site.urls),
     path('accounts/', include('apps.accounts.urls', namespace='accounts')),
+    path('products/', include('apps.products.urls', namespace='products')),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

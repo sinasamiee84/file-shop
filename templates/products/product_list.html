@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}لیست محصولات{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 2rem;">محصولات ما</h1>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+    {% for product in products %}
+    <div class="auth-card" style="margin: 0;">
+        {% if product.cover %}
+            <img src="{{ product.cover.url }}" alt="{{ product.title }}" style="width: 100%; border-radius: 12px; margin-bottom: 12px;">
+        {% endif %}
+        <h2 style="font-size: 1.2rem; margin: 0 0 8px;">{{ product.title }}</h2>
+        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 16px;">{{ product.description|truncatewords:15 }}</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 800; color: var(--primary);">{{ product.price }} تومان</span>
+            <a href="{% url 'products:detail' product.slug %}" class="nav-button primary">مشاهده</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>هنوز محصولی برای نمایش وجود ندارد.</p>
+    {% endfor %}
+</div>
+{% endblock %}

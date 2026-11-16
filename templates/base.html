@@ -43,6 +43,9 @@
             background: rgba(255, 255, 255, .86);
             border-bottom: 1px solid var(--border);
             backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-inner {
@@ -84,7 +87,14 @@
             cursor: pointer;
         }
 
-        .nav-link { color: var(--text); }
+        .nav-link {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
 
         .nav-button {
             border: 1px solid var(--border);
@@ -260,6 +270,9 @@
             </a>
 
             <nav class="nav-actions" aria-label="منوی کاربر">
+                <!-- لینک به لیست محصولات -->
+                <a class="nav-link" href="{% url 'products:list' %}">محصولات</a>
+
                 {% if user.is_authenticated %}
                     <span class="welcome">سلام، {{ user.username }}</span>
 
