@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}ورود | فایل‌مارکت{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+    <p class="eyebrow">خوش برگشتی 👋</p>
+    <h1>ورود به حساب کاربری</h1>
+    <p class="subtitle">برای دسترسی به فایل‌ها و سفارش‌هایت وارد شو.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            <div class="form-error" role="alert">
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="field">
+                {{ field.label_tag }}
+                {{ field }}
+
+                {% for error in field.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button class="submit-button" type="submit">ورود به حساب</button>
+    </form>
+
+    <p class="auth-footer">
+        هنوز حساب نداری؟ <a href="{% url 'accounts:register' %}">ثبت‌نام کن</a>
+    </p>
+</section>
+{% endblock %}

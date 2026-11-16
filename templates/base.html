@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}فایل‌مارکت{% endblock %}</title>
+
+    <style>
+        :root {
+            --bg: #f5f7fc;
+            --surface: #ffffff;
+            --text: #17233b;
+            --muted: #718096;
+            --primary: #5856d6;
+            --primary-dark: #4442b8;
+            --border: #e4e9f2;
+            --danger: #b42318;
+            --success: #067647;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Tahoma, Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 85% 10%, #e7e5ff 0, transparent 32%),
+                radial-gradient(circle at 10% 90%, #dff4ff 0, transparent 35%),
+                var(--bg);
+        }
+
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { color: var(--primary-dark); }
+
+        .container {
+            width: min(1120px, calc(100% - 32px));
+            margin-inline: auto;
+        }
+
+        .site-header {
+            background: rgba(255, 255, 255, .86);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+        }
+
+        .header-inner {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: var(--text);
+        }
+
+        .brand-mark {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-actions form { margin: 0; }
+
+        .nav-link, .nav-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            padding: 8px 15px;
+            border-radius: 11px;
+            font: inherit;
+            font-size: .88rem;
+            cursor: pointer;
+        }
+
+        .nav-link { color: var(--text); }
+
+        .nav-button {
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text);
+        }
+
+        .nav-button:hover { background: #f6f7ff; }
+
+        .nav-button.primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .nav-button.primary:hover {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .welcome {
+            color: var(--muted);
+            font-size: .88rem;
+        }
+
+        main { padding: 52px 0 72px; }
+
+        .messages {
+            width: min(460px, 100%);
+            margin: 0 auto 18px;
+        }
+
+        .message {
+            padding: 13px 16px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            background: #eaf8f0;
+            color: var(--success);
+            border: 1px solid #bce8cf;
+            font-size: .9rem;
+        }
+
+        .message.error {
+            background: #fff1f0;
+            color: var(--danger);
+            border-color: #ffd5d2;
+        }
+
+        .auth-card {
+            width: min(460px, 100%);
+            margin: 0 auto;
+            padding: 36px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 24px 70px rgba(35, 45, 90, .08);
+        }
+
+        .eyebrow {
+            margin: 0 0 12px;
+            color: var(--primary);
+            font-size: .82rem;
+            font-weight: 800;
+        }
+
+        .auth-card h1 {
+            margin: 0 0 9px;
+            font-size: 1.7rem;
+        }
+
+        .subtitle {
+            margin: 0 0 28px;
+            color: var(--muted);
+            line-height: 1.8;
+            font-size: .9rem;
+        }
+
+        .field { margin-bottom: 18px; }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: .87rem;
+            font-weight: 700;
+        }
+
+        .field input {
+            display: block;
+            width: 100%;
+            height: 48px;
+            padding: 10px 14px;
+            border: 1px solid #d9dfeb;
+            border-radius: 12px;
+            outline: none;
+            background: #fbfcff;
+            color: var(--text);
+            font: inherit;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .field input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(88, 86, 214, .12);
+        }
+
+        .field-help {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: .77rem;
+            line-height: 1.8;
+        }
+
+        .field-error, .form-error {
+            margin: 8px 0 0;
+            color: var(--danger);
+            font-size: .83rem;
+            line-height: 1.7;
+        }
+
+        .form-error {
+            padding: 12px;
+            margin: 0 0 18px;
+            background: #fff1f0;
+            border-radius: 10px;
+        }
+
+        .submit-button {
+            width: 100%;
+            min-height: 49px;
+            margin-top: 8px;
+            border: 0;
+            border-radius: 12px;
+            background: var(--primary);
+            color: #fff;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .submit-button:hover { background: var(--primary-dark); }
+
+        .auth-footer {
+            margin: 24px 0 0;
+            padding-top: 19px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: .88rem;
+            color: var(--muted);
+        }
+
+        .site-footer {
+            padding: 22px 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        @media (max-width: 600px) {
+            .header-inner { min-height: 68px; }
+            .welcome { display: none; }
+            .nav-link, .nav-button { padding: 8px 10px; }
+            main { padding-top: 30px; }
+            .auth-card { padding: 26px 20px; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="{% url 'accounts:login' %}">
+                فایل<span class="brand-mark">‌مارکت</span>
+            </a>
+
+            <nav class="nav-actions" aria-label="منوی کاربر">
+                {% if user.is_authenticated %}
+                    <span class="welcome">سلام، {{ user.username }}</span>
+
+                    <form method="post" action="{% url 'accounts:logout' %}">
+                        {% csrf_token %}
+                        <button class="nav-button" type="submit">خروج</button>
+                    </form>
+                {% else %}
+                    <a class="nav-link" href="{% url 'accounts:login' %}">ورود</a>
+                    <a class="nav-button primary" href="{% url 'accounts:register' %}">ثبت‌نام</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% if messages %}
+            <div class="messages" role="status">
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">فایل‌مارکت؛ خرید آسان فایل‌های دیجیتال</div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}ثبت‌نام | فایل‌مارکت{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+    <p class="eyebrow">شروع یک تجربه تازه ✨</p>
+    <h1>ساخت حساب کاربری</h1>
+    <p class="subtitle">حساب بساز تا فایل‌های خریداری‌شده‌ات همیشه در دسترست باشند.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-error" role="alert">
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="field">
+                {{ field.label_tag }}
+                {{ field }}
+
+                {% if field.help_text %}
+                    <p class="field-help">{{ field.help_text }}</p>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button class="submit-button" type="submit">ساخت حساب کاربری</button>
+    </form>
+
+    <p class="auth-footer">
+        قبلاً ثبت‌نام کردی؟ <a href="{% url 'accounts:login' %}">وارد شو</a>
+    </p>
+</section>
+{% endblock %}
