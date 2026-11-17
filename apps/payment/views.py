@@ -2,16 +2,28 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.urls import reverse
-from apps.cart.models import Order ,Cart
+from apps.cart.models import Order, Cart
 from .models import Payment
 from .services import send_zarinpal_request, verify_zarinpal_payment
 
 
 class StartPaymentView(LoginRequiredMixin, View):
     def get(self, request, order_id):
-        order = get_object_or_404(Order, id=order_id, user=request.user, status="pending")
+        # بررسی اینکه سفارش وجود داشته باشد، متعلق به کاربر جاری باشد،
+        # و وضعیت آن برای پرداخت مناسب باشد (pending یا failed)
+        order = get_object_or_404(
+            Order,
+            id=order_id,
+            user=request.user,
+            status__in=["pending", "failed"]
+        )
 
-        # مبلغ سفارش (فرض بر این است که مبلغ بر حسب تومان است)
+        # اگر سفارش روی حالت failed بود، برای تلاش مجدد آن را به pending برمی‌گردانیم
+        if order.status == "failed":
+            order.status = "pending"
+            order.save(update_fields=["status"])
+
+        # مبلغ سفارش (بر حسب تومان)
         amount = order.total_price
         description = f"پرداخت سفارش شماره {order.id}"
 
@@ -31,7 +43,8 @@ class StartPaymentView(LoginRequiredMixin, View):
             return redirect(payment_url)
         else:
             # در صورت خطا در اتصال به درگاه
-            return render(request, "payment/payment_error.html", {"error": result})
+            return render(request, "payment/payment_error.html",
+                          {"error": result, "order": order})
 
 
 class VerifyPaymentView(LoginRequiredMixin, View):
@@ -49,7 +62,6 @@ class VerifyPaymentView(LoginRequiredMixin, View):
             order.save()
             return render(request, "payment/payment_failed.html", {"order": order})
 
-
         success, ref_id_or_error = verify_zarinpal_payment(payment.amount, authority)
 
         if success:
@@ -57,11 +69,10 @@ class VerifyPaymentView(LoginRequiredMixin, View):
             payment.ref_id = str(ref_id_or_error)
             payment.save()
 
-
             order.status = "paid"
             order.save()
 
-
+            # پاک کردن سبد خرید کاربر پس از پرداخت موفق
             cart = Cart.objects.filter(user=request.user).first()
             if cart:
                 cart.items.all().delete()
@@ -73,4 +84,3 @@ class VerifyPaymentView(LoginRequiredMixin, View):
             order.status = "failed"
             order.save()
             return render(request, "payment/payment_failed.html", {"order": order, "error": ref_id_or_error})
-
