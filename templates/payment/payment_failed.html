@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}خطا در پرداخت{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 600px;">
+    <div class="auth-card p-5 text-center" style="background: var(--surface); border: 1px solid var(--border); border-radius: 20px;">
+        <div style="font-size: 3rem; color: var(--danger, #dc3545); margin-bottom: 16px;">✖</div>
+        <h2 class="mb-3" style="color: var(--danger, #dc3545);">پرداخت ناموفق بود</h2>
+        <p class="text-muted mb-4">تراکنش مربوط به سفارش شماره <strong>#{{ order.id }}</strong> انجام نشد یا توسط کاربر لغو گردید.</p>
+        
+        {% if error %}
+        <div style="background: var(--bg); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; color: var(--danger);">
+            خطا: {{ error }}
+        </div>
+        {% endif %}
+
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <a href="{% url 'payment:start' order.id %}" style="padding: 10px 20px; background: var(--warning, #ffc107); color: #000; border-radius: 10px; text-decoration: none; font-weight: 600;">تلاش مجدد پرداخت</a>
+            <a href="{% url 'cart:detail' %}" style="padding: 10px 20px; background: var(--secondary, #6c757d); color: white; border-radius: 10px; text-decoration: none; font-weight: 600;">بازگشت به سبد خرید</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

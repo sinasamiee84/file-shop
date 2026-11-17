@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}سبد خرید{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; padding: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; box-shadow: 0 24px 70px rgba(35, 45, 90, .08);">
+    <h1 style="margin-top: 0; margin-bottom: 24px; text-align: center; font-size: 1.7rem;">سبد خرید شما</h1>
+
+    {% if cart_items %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: right; margin-bottom: 24px;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border); color: var(--muted); font-size: .88rem;">
+                        <th style="padding: 12px;">محصول</th>
+                        <th style="padding: 12px;">قیمت واحد</th>
+                        <th style="padding: 12px; text-align: center;">تعداد</th>
+                        <th style="padding: 12px;">مجموع</th>
+                        <th style="padding: 12px; text-align: center;">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 14px 12px; font-weight: 600;">{{ item.product.title }}</td>
+                        <td style="padding: 14px 12px; color: var(--muted);">{{ item.product.price }} تومان</td>
+
+                        <!-- کنترل تعداد (افزایش / کاهش) -->
+                        <td style="padding: 14px 12px; text-align: center;">
+                            <form action="{% url 'cart:update' item.id %}" method="post" style="display: inline-flex; align-items: center; gap: 6px; margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" name="action" value="decrease" style="width: 28px; height: 28px; border: 1px solid var(--border); background: #f6f7ff; border-radius: 6px; cursor: pointer; font-weight: bold;">-</button>
+                                <span style="min-width: 24px; text-align: center; font-weight: 600;">{{ item.quantity }}</span>
+                                <button type="submit" name="action" value="increase" style="width: 28px; height: 28px; border: 1px solid var(--border); background: #f6f7ff; border-radius: 6px; cursor: pointer; font-weight: bold;">+</button>
+                            </form>
+                        </td>
+
+                        <td style="padding: 14px 12px; font-weight: 700; color: var(--primary);">{{ item.total_price }} تومان</td>
+
+                        <!-- دکمه حذف کامل سطر -->
+                        <td style="padding: 14px 12px; text-align: center;">
+                            <form action="{% url 'cart:update' item.id %}" method="post" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" name="action" value="remove" style="padding: 6px 12px; background: #fff1f0; color: var(--danger); border: 1px solid #ffd5d2; border-radius: 8px; font: inherit; font-size: .8rem; cursor: pointer;">حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px;">
+            <h3 style="margin: 0; font-size: 1.2rem;">مجموع کل: <span style="color: var(--primary);">{{ cart.total_price }}</span> تومان</h3>
+            <a href="{% url 'cart:checkout' %}" class="submit-button" style="display: inline-flex; align-items: center; justify-content: center; width: auto; padding: 12px 28px; text-decoration: none; background: var(--success);">تایید و ثبت سفارش</a>
+        </div>
+    {% else %}
+        <p style="text-align: center; color: var(--muted); margin: 40px 0; font-size: 1rem;">سبد خرید شما خالی است.</p>
+        <div style="text-align: center;">
+            <a href="{% url 'products:list' %}" class="submit-button" style="display: inline-flex; align-items: center; justify-content: center; width: auto; padding: 12px 28px; text-decoration: none;">مشاهده محصولات</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -51,6 +51,8 @@ INSTALLED_APPS = [
 
     'apps.accounts',  #apps
     'apps.products',
+    'apps.cart',
+    'apps.payment',
 ]
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
@@ -191,3 +193,6 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+# Zarinpal Payment Settings
+ZARINPAL_MERCHANT_ID = env("ZARINPAL_MERCHANT_ID", default="12345678-1234-1234-1234-123456789abc")
+ZARINPAL_SANDBOX = env.bool("ZARINPAL_SANDBOX", default=True)

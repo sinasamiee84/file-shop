@@ -265,13 +265,14 @@
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <a class="brand" href="{% url 'accounts:login' %}">
+            <a class="brand" href="{% url 'home' %}">
                 فایل<span class="brand-mark">‌مارکت</span>
             </a>
 
             <nav class="nav-actions" aria-label="منوی کاربر">
-                <!-- لینک به لیست محصولات -->
                 <a class="nav-link" href="{% url 'products:list' %}">محصولات</a>
+                <!-- لینک به سبد خرید -->
+                <a class="nav-link" href="{% url 'cart:detail' %}">سبد خرید</a>
 
                 {% if user.is_authenticated %}
                     <span class="welcome">سلام، {{ user.username }}</span>
