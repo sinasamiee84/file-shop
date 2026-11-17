@@ -51,3 +51,15 @@ class ProductDetailView(DetailView):
 
     slug_field = "slug"
     slug_url_kwarg = "slug"
+class CategoryDetailView(DetailView):
+    model = Category
+    context_object_name = "category"
+    template_name = "products/category_detail.html"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # گرفتن محصولات فعال این دسته‌بندی
+        context["products"] = self.object.products.filter(is_active=True).order_by("-created_at")
+        return context

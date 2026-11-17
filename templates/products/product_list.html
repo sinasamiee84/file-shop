@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block title %}لیست محصولات{% endblock %}
 
 {% block content %}
@@ -25,38 +26,43 @@
                     <section class="category-row-section">
                         <div class="category-row-header">
                             <h2>{{ category.name }}</h2>
+                            <a href="{% url 'products:category_detail' category.slug %}" class="category-more-link">
+                                مشاهده بیشتر &larr;
+                            </a>
                         </div>
 
                         <div class="product-grid">
                             {% for product in category.active_products %}
-                                <div class="auth-card product-card-item" style="margin: 0; display: flex; flex-direction: column;">
-                                    {% if product.cover %}
-                                        <div class="product-cover-wrap">
-                                            <img src="{{ product.cover.url }}" alt="{{ product.title }}">
+                                {% if forloop.counter <= 4 %}
+                                    <div class="auth-card product-card-item" style="margin: 0; display: flex; flex-direction: column;">
+                                        {% if product.cover %}
+                                            <div class="product-cover-wrap">
+                                                <img src="{{ product.cover.url }}" alt="{{ product.title }}" loading="lazy">
+                                            </div>
+                                        {% else %}
+                                            <div class="product-cover-wrap placeholder-cover">
+                                                <span>فایل‌مارکت</span>
+                                            </div>
+                                        {% endif %}
+
+                                        <h3 style="font-size: 1.1rem; margin: 12px 0 8px;">
+                                            <a href="{% url 'products:detail' product.slug %}" style="color: var(--text); text-decoration: none;">
+                                                {{ product.title }}
+                                            </a>
+                                        </h3>
+
+                                        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; flex-grow: 1;">
+                                            {{ product.description|truncatewords:12 }}
+                                        </p>
+
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border);">
+                                            <span style="font-weight: 800; color: var(--success); font-size: 0.95rem;">
+                                                {{ product.price|floatformat:0 }} تومان
+                                            </span>
+                                            <a href="{% url 'products:detail' product.slug %}" class="nav-button primary">مشاهده</a>
                                         </div>
-                                    {% else %}
-                                        <div class="product-cover-wrap placeholder-cover">
-                                            <span>فایل‌مارکت</span>
-                                        </div>
-                                    {% endif %}
-
-                                    <h3 style="font-size: 1.1rem; margin: 12px 0 8px;">
-                                        <a href="{% url 'products:detail' product.slug %}" style="color: var(--text); text-decoration: none;">
-                                            {{ product.title }}
-                                        </a>
-                                    </h3>
-
-                                    <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; flex-grow: 1;">
-                                        {{ product.description|truncatewords:12 }}
-                                    </p>
-
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border);">
-                                        <span style="font-weight: 800; color: var(--success); font-size: 0.95rem;">
-                                            {{ product.price|floatformat:0 }} تومان
-                                        </span>
-                                        <a href="{% url 'products:detail' product.slug %}" class="nav-button primary">مشاهده</a>
                                     </div>
-                                </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </section>
@@ -99,6 +105,11 @@
     margin-bottom: 20px;
     padding-bottom: 12px;
     border-bottom: 2px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .category-row-header h2 {
@@ -117,6 +128,18 @@
     height: 20px;
     background: var(--primary);
     border-radius: 4px;
+}
+
+.category-more-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.category-more-link:hover {
+    text-decoration: underline;
 }
 
 .product-grid {
