@@ -4,6 +4,8 @@ from django.contrib.auth.forms import (
     AuthenticationForm as DjangoAuthenticationForm,
     UserCreationForm as DjangoUserCreationForm,
 )
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 User = get_user_model()
 
@@ -34,4 +36,28 @@ class LoginForm(DjangoAuthenticationForm):
     password = forms.CharField(
         label="رمز عبور",
         widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "رمز عبور"}),
+    )
+
+
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update(
+                {
+                    "class": "form-control",
+                    "placeholder": field.label,
+                }
+            )
+
+    new_password2 = forms.CharField(
+        label="تکرار رمز عبور جدید",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "رمز عبور جدید را دوباره وارد کنید",
+            }
+        ),
     )
