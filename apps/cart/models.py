@@ -54,6 +54,7 @@ class Order(models.Model):
         on_delete=models.CASCADE,
         verbose_name="کاربر"
     )
+    user_order_number = models.PositiveIntegerField(default=1)
     total_price = models.PositiveIntegerField(verbose_name="مبلغ کل (تومان)")
     phone_number = models.CharField(max_length=15, verbose_name="شماره تماس خریدار") # ذخیره شماره برای فاکتور
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name="وضعیت سفارش")

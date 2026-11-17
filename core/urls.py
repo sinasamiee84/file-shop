@@ -21,10 +21,58 @@ from django.views.generic import TemplateView
 from core import settings
 
 from django.conf.urls.static import static
+from django.db.models import Count, Q
+from django.views.generic import TemplateView
+from apps.products.models import Product
 
 
 class HomeView(TemplateView):
     template_name = "home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # ۱. پرفروش‌ترین محصولات (بر اساس تعداد فروش در سفارش‌های paid)
+        context["best_selling_products"] = (
+            Product.objects.filter(is_active=True)
+            .annotate(
+                sales_count=Count(
+                    "orderitem",
+                    filter=Q(orderitem__order__status="paid")
+                )
+            )
+            .order_by("-sales_count", "-created_at")[:4]
+        )
+
+        # ۲. جدیدترین محصولات
+        context["newest_products"] = (
+            Product.objects.filter(is_active=True)
+            .order_by("-created_at")[:4]
+        )
+
+        # ۳. بخش مقالات / وبلاگ نمایشی (نمونه ثابت برای زیبایی صفحه اصلی)
+        context["blog_posts"] = [
+            {
+                "title": "راهنمای جامع بهینه‌سازی و سئوی فایل‌های دانلودی",
+                "date": "۲۵ آبان ۱۴۰۵",
+                "excerpt": "نکاتی کلیدی برای افزایش فروش و جذب مشتری بیشتر برای محصولات دیجیتال در وب‌سایت...",
+                "url": "#"
+            },
+            {
+                "title": "چگونه امنیت محصولات دانلودی را در جنگو تضمین کنیم؟",
+                "date": "۱۸ آبان ۱۴۰۵",
+                "excerpt": "بررسی روش‌های امن‌سازی لینک‌های دانلود و جلوگیری از دسترسی غیرمجاز به فایل‌ها...",
+                "url": "#"
+            },
+            {
+                "title": "معرفی ابزارهای برتر برای طراحان و تولیدکنندگان محتوا",
+                "date": "۱۰ آبان ۱۴۰۵",
+                "excerpt": "مجموعه‌ای از کاربردی‌ترین ابزارها که روند تولید فایل و محتوای دیجیتال را تسریع می‌کنند...",
+                "url": "#"
+            },
+        ]
+
+        return context
 
 
 urlpatterns = [

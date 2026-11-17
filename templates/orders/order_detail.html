@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}جزئیات سفارش {{ order.id }}{% endblock %}
+{% block title %}جزئیات سفارش {{ order.user_order_number }}{% endblock %}
 
 {% block content %}
 <div class="detail-page">
@@ -9,7 +9,7 @@
             <a class="back-link" href="{% url 'orders:list' %}">
                 ← بازگشت به سفارش‌ها
             </a>
-            <h1>جزئیات سفارش #{{ order.id }}</h1>
+            <h1>جزئیات سفارش #{{ order.user_order_number}}</h1>
             <p>ثبت‌شده در {{ order.created_at|date:"Y/m/d - H:i" }}</p>
         </div>
 

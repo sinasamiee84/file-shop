@@ -70,6 +70,56 @@
         .brand:hover { color: var(--text); }
         .brand-mark { color: var(--primary); }
 
+        /* --- استایل مدرن و شیک سرچ‌بار --- */
+        .search-form {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 16px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .search-form input {
+            width: 100%;
+            min-height: 42px;
+            padding: 8px 42px 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: #f8f9fd;
+            color: var(--text);
+            font: inherit;
+            font-size: .88rem;
+            outline: none;
+            transition: all .2s ease;
+        }
+
+        .search-form input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(88, 86, 214, .1);
+        }
+
+        .search-form button {
+            position: absolute;
+            left: 5px;
+            min-height: 32px;
+            padding: 0 12px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            font: inherit;
+            font-size: .81rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .search-form button:hover {
+            background: var(--primary-dark);
+        }
+
         .nav-actions {
             display: flex;
             align-items: center;
@@ -282,7 +332,7 @@
             text-align: center;
         }
 
-        /* --- استایل‌های جدید جدول‌ها، صفحات سفارش و دکمه‌ها --- */
+        /* --- استایل‌های جدول‌ها، صفحات سفارش و دکمه‌ها --- */
 
         .status {
             display: inline-flex;
@@ -487,6 +537,12 @@
                 align-items: flex-start;
                 flex-direction: column;
                 padding: 14px 0;
+                gap: 12px;
+            }
+            .search-form {
+                max-width: 100%;
+                margin: 0;
+                width: 100%;
             }
             .nav-actions { width: 100%; justify-content: flex-start; }
             .welcome { display: none; }
@@ -511,6 +567,11 @@
                 فایل<span class="brand-mark">‌مارکت</span>
             </a>
 
+            <form class="search-form" action="{% url 'products:list' %}" method="get" role="search">
+                <input type="search" name="q" value="{{ search_query|default:'' }}" placeholder="جستجوی محصول..." aria-label="جستجوی محصول">
+                <button type="submit">جستجو</button>
+            </form>
+
             <nav class="nav-actions" aria-label="منوی کاربر">
                 <a class="nav-link" href="{% url 'products:list' %}">
                     محصولات
@@ -526,7 +587,7 @@
                     </a>
 
                     <span class="welcome" title="{{ user.phone_number }}">
-                        سلام، {{ user.phone_number }}
+                        سلام، {{ user.username }}
                     </span>
 
                     <form method="post" action="{% url 'accounts:logout' %}">

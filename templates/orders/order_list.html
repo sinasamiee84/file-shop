@@ -24,7 +24,7 @@
                 <tbody>
                     {% for order in orders %}
                         <tr>
-                            <td>#{{ order.id }}</td>
+                            <td>#{{ order.user_order_number }}</td>
                             <td>{{ order.created_at|date:"Y/m/d - H:i" }}</td>
                             <td>{{ order.total_price|floatformat:0 }} تومان</td>
                             <td>

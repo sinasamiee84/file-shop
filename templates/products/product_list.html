@@ -2,23 +2,151 @@
 {% block title %}لیست محصولات{% endblock %}
 
 {% block content %}
-<h1 style="margin-bottom: 2rem;">محصولات ما</h1>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
-    {% for product in products %}
-    <div class="auth-card" style="margin: 0;">
-        {% if product.cover %}
-            <img src="{{ product.cover.url }}" alt="{{ product.title }}" style="width: 100%; border-radius: 12px; margin-bottom: 12px;">
-        {% endif %}
-        <h2 style="font-size: 1.2rem; margin: 0 0 8px;">{{ product.title }}</h2>
-        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 16px;">{{ product.description|truncatewords:15 }}</p>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 800; color: var(--primary);">{{ product.price }} تومان</span>
-            <a href="{% url 'products:detail' product.slug %}" class="nav-button primary">مشاهده</a>
+<div class="products-page">
+    <div class="page-header" style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            {% if search_query %}
+                <h1>نتایج جستجو برای: «{{ search_query }}»</h1>
+                <p>
+                    مواردی که با عبارت جستجوشده مطابقت دارند
+                    (<a href="{% url 'products:list' %}" style="color: var(--primary); text-decoration: underline;">مشاهده همه محصولات</a>)
+                </p>
+            {% else %}
+                <h1>محصولات بر اساس دسته‌بندی</h1>
+                <p>دسته‌بندی‌های مختلف فایل‌های دیجیتال و آموزشی</p>
+            {% endif %}
         </div>
     </div>
-    {% empty %}
-    <p>هنوز محصولی برای نمایش وجود ندارد.</p>
-    {% endfor %}
+
+    {% if categories %}
+        <div class="category-sections">
+            {% for category in categories %}
+                {% if category.active_products %}
+                    <section class="category-row-section">
+                        <div class="category-row-header">
+                            <h2>{{ category.name }}</h2>
+                        </div>
+
+                        <div class="product-grid">
+                            {% for product in category.active_products %}
+                                <div class="auth-card product-card-item" style="margin: 0; display: flex; flex-direction: column;">
+                                    {% if product.cover %}
+                                        <div class="product-cover-wrap">
+                                            <img src="{{ product.cover.url }}" alt="{{ product.title }}">
+                                        </div>
+                                    {% else %}
+                                        <div class="product-cover-wrap placeholder-cover">
+                                            <span>فایل‌مارکت</span>
+                                        </div>
+                                    {% endif %}
+
+                                    <h3 style="font-size: 1.1rem; margin: 12px 0 8px;">
+                                        <a href="{% url 'products:detail' product.slug %}" style="color: var(--text); text-decoration: none;">
+                                            {{ product.title }}
+                                        </a>
+                                    </h3>
+
+                                    <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; flex-grow: 1;">
+                                        {{ product.description|truncatewords:12 }}
+                                    </p>
+
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border);">
+                                        <span style="font-weight: 800; color: var(--success); font-size: 0.95rem;">
+                                            {{ product.price|floatformat:0 }} تومان
+                                        </span>
+                                        <a href="{% url 'products:detail' product.slug %}" class="nav-button primary">مشاهده</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state" style="text-align: center; padding: 4rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 20px;">
+            <h2 style="margin-bottom: 8px;">محصولی یافت نشد</h2>
+            <p style="color: var(--muted); margin-bottom: 1.5rem;">
+                {% if search_query %}
+                    متأسفانه موردی مطابق با جستجوی «{{ search_query }}» پیدا نشد.
+                {% else %}
+                    هنوز محصولی برای نمایش در دسته‌بندی‌ها ثبت نشده است.
+                {% endif %}
+            </p>
+            {% if search_query %}
+                <a href="{% url 'products:list' %}" class="nav-button primary">بازگشت به همه محصولات</a>
+            {% endif %}
+        </div>
+    {% endif %}
 </div>
+
+<style>
+.category-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.category-row-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(35, 45, 90, 0.04);
+}
+
+.category-row-header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+}
+
+.category-row-header h2 {
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.category-row-header h2::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.product-cover-wrap {
+    width: 100%;
+    height: 150px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f0f3f9;
+    margin-bottom: 4px;
+}
+
+.product-cover-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+</style>
 {% endblock %}
