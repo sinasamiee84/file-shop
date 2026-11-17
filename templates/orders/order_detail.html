@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}جزئیات سفارش {{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="detail-page">
+    <div class="page-header">
+        <div>
+            <a class="back-link" href="{% url 'orders:list' %}">
+                ← بازگشت به سفارش‌ها
+            </a>
+            <h1>جزئیات سفارش #{{ order.id }}</h1>
+            <p>ثبت‌شده در {{ order.created_at|date:"Y/m/d - H:i" }}</p>
+        </div>
+
+        <div class="status-wrap">
+            {% if order.status == "paid" %}
+                <span class="status status-paid">پرداخت شده</span>
+            {% elif order.status == "pending" %}
+                <span class="status status-pending">در انتظار پرداخت</span>
+            {% elif order.status == "failed" %}
+                <span class="status status-failed">پرداخت ناموفق</span>
+            {% else %}
+                <span class="status">{{ order.get_status_display }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if order.status == "pending" or order.status == "failed" %}
+        <div class="pay-banner">
+            <div>
+                <strong>پرداخت تکمیل نشده است</strong>
+                <p>
+                    برای فعال‌شدن لینک دانلود، ابتدا پرداخت این سفارش را کامل کنید.
+                </p>
+            </div>
+            <a
+                class="button button-primary"
+                href="{% url 'payment:start' order.id %}"
+            >
+                پرداخت / تلاش مجدد
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="order-items">
+        {% for item in order.items.all %}
+            <div class="item-row">
+                <div class="item-info">
+                    <h3>{{ item.product.title|default:"محصول حذف‌شده" }}</h3>
+                    <div class="item-meta">
+                        <span>تعداد: {{ item.quantity }}</span>
+                        <span>قیمت واحد: {{ item.price|floatformat:0 }} تومان</span>
+                        <span>جمع: {{ item.total|floatformat:0 }} تومان</span>
+                    </div>
+                </div>
+
+                <div class="item-action">
+                    {% if order.status == "paid" and item.product and item.product.file %}
+                        <a
+                            class="button button-primary"
+                            href="{% url 'orders:secure_download' item.id %}"
+                        >
+                            دانلود فایل
+                        </a>
+                    {% elif order.status == "paid" %}
+                        <span class="muted-text">این محصول فایل دانلودی ندارد.</span>
+                    {% else %}
+                        <span class="muted-text">پس از پرداخت، لینک دانلود فعال می‌شود.</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p>آیتمی برای این سفارش ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+
+    <div class="order-summary">
+        <div class="summary-row">
+            <span>مبلغ کل</span>
+            <strong>{{ order.total_price|floatformat:0 }} تومان</strong>
+        </div>
+    </div>
+</div>
+{% endblock %}

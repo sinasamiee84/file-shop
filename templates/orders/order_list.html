@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}سفارش‌های من{% endblock %}
+
+{% block content %}
+<div class="page-card">
+    <div class="page-header">
+        <h1>سفارش‌های من</h1>
+        <p>تاریخچه خرید و وضعیت پرداخت سفارش‌های خود را اینجا ببینید.</p>
+    </div>
+
+    {% if orders %}
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>شماره سفارش</th>
+                        <th>تاریخ ثبت</th>
+                        <th>مبلغ کل</th>
+                        <th>وضعیت</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.created_at|date:"Y/m/d - H:i" }}</td>
+                            <td>{{ order.total_price|floatformat:0 }} تومان</td>
+                            <td>
+                                {% if order.status == "paid" %}
+                                    <span class="status status-paid">پرداخت شده</span>
+                                {% elif order.status == "pending" %}
+                                    <span class="status status-pending">در انتظار پرداخت</span>
+                                {% elif order.status == "failed" %}
+                                    <span class="status status-failed">ناموفق</span>
+                                {% else %}
+                                    <span class="status">{{ order.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a
+                                    class="action-link"
+                                    href="{% url 'orders:detail' order.id %}"
+                                >
+                                    مشاهده جزئیات
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if is_paginated %}
+            <nav class="pagination" aria-label="صفحه‌بندی">
+                {% if page_obj.has_previous %}
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                        قبلی
+                    </a>
+                {% endif %}
+
+                <span class="page-info">
+                    صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                        بعدی
+                    </a>
+                {% endif %}
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <h2>هنوز سفارشی ثبت نکرده‌اید</h2>
+            <p>می‌توانید از میان محصولات ما اولین خرید خود را آغاز کنید.</p>
+            <a class="action-link" href="{% url 'products:list' %}">
+                مشاهده محصولات
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

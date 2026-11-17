@@ -34,6 +34,7 @@ urlpatterns = [
     path('products/', include('apps.products.urls', namespace='products')),
     path('cart/', include('apps.cart.urls', namespace='cart')),
     path('payment/', include('apps.payment.urls', namespace='payment')),
+    path('orders/', include('apps.orders.urls', namespace='orders')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
