@@ -6,7 +6,7 @@ from .views import (
     CheckoutView,
     UpdateCartItemView
 )
-
+from apps.orders.views import OrderDetailView
 app_name = "cart"
 
 urlpatterns = [
@@ -15,6 +15,5 @@ urlpatterns = [
     path("remove/<int:item_id>/", RemoveFromCartView.as_view(), name="remove"),
     path("update/<int:item_id>/", UpdateCartItemView.as_view(), name="update"),
     path("checkout/", CheckoutView.as_view(), name="checkout"),
-    # صفحه‌ای که بعد از ثبت سفارش کاربر به آن می‌رود (در ادامه مدل یا ویوی جزئیات سفارش را هم اضافه می‌کنیم)
-    # path("order/<int:order_id>/", OrderDetailView.as_view(), name="order_detail"),
+     path("order/<int:order_id>/", OrderDetailView.as_view(), name="order_detail"),
 ]

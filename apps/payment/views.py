@@ -49,7 +49,7 @@ class VerifyPaymentView(LoginRequiredMixin, View):
             order.save()
             return render(request, "payment/payment_failed.html", {"order": order})
 
-        # تایید نهایی از سمت سرور
+
         success, ref_id_or_error = verify_zarinpal_payment(payment.amount, authority)
 
         if success:
@@ -57,11 +57,11 @@ class VerifyPaymentView(LoginRequiredMixin, View):
             payment.ref_id = str(ref_id_or_error)
             payment.save()
 
-            # تغییر وضعیت سفارش به پرداخت شده
+
             order.status = "paid"
             order.save()
 
-            # *** اینجا سبد خرید کاربر خالی می‌شود چون پرداخت قطعی و موفق بوده ***
+
             cart = Cart.objects.filter(user=request.user).first()
             if cart:
                 cart.items.all().delete()
